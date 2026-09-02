@@ -3,10 +3,10 @@ from ultralytics import YOLO
 from PIL import Image
 
 # 1. Page Config
-st.set_page_config(page_title="AI Animal Detector", page_icon="🐾", layout="wide")
+st.set_page_config(page_title="AI Agent for Detection", page_icon="🐾", layout="wide")
 
-st.title("🐾 AI Animal Detector with Result History")
-st.write("Upload images to detect animals. Previous results will stay on screen until you clear them.")
+st.title("🐾 AI Agent for Detection")
+st.write("Upload images.")
 
 # 2. Load custom animal model (best.pt)
 @st.cache_resource
