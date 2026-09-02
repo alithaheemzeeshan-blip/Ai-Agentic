@@ -3,7 +3,7 @@ from ultralytics import YOLO
 from PIL import Image
 
 # 1. Page Config
-st.set_page_config(page_title="AI Agent for Detection", page_icon="🐾", layout="wide")
+st.set_page_config(page_title="AI Agent for Detection", page_icon="🚀", layout="wide")
 
 st.title("🐾 AI Agent for Detection")
 st.write("Created By Zeeshan Thaheem")
