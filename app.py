@@ -2,24 +2,24 @@ import streamlit as st
 from ultralytics import YOLO
 from PIL import Image
 
-# 1. Page Config
+# Page Config
 st.set_page_config(page_title="AI Agent for Detection", page_icon="🚀", layout="wide")
 
 st.title("🚀 AI Agent for Detection")
 st.write("Created By Zeeshan Thaheem")
 
-# 2. Load custom animal model (best.pt)
+# Load model
 @st.cache_resource
 def load_animal_model():
     return YOLO("best.pt")
 
 model = load_animal_model()
 
-# 3. Initialize Session State for storing history
+# Session State for history
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# 4. Sidebar Controls
+# Sidebar Controls
 st.sidebar.header("Settings & Actions")
 confidence_threshold = st.sidebar.slider(
     "Confidence Threshold", 
@@ -29,33 +29,27 @@ confidence_threshold = st.sidebar.slider(
     step=0.05
 )
 
-# Clear History Button
 if st.sidebar.button("🗑️ Clear History"):
     st.session_state.history = []
     st.rerun()
 
-# 5. File Uploader
+# File Uploader
 uploaded_files = st.file_uploader(
     "Upload images...", 
     type=["jpg", "jpeg", "png"], 
     accept_multiple_files=True
 )
 
-# Process new file uploads and append to session history
 if uploaded_files:
     for uploaded_file in uploaded_files:
-        # Check if file has already been processed to avoid duplicates
         if not any(item["name"] == uploaded_file.name for item in st.session_state.history):
             image = Image.open(uploaded_file).convert("RGB")
             
-            # Run YOLO inference
             results = model.predict(image, conf=confidence_threshold)
             
-            # Convert BGR -> RGB channel array for display
             res_bgr = results[0].plot()
             res_rgb = res_bgr[:, :, ::-1]
             
-            # Extract detection data
             detections = []
             for box in results[0].boxes:
                 class_id = int(box.cls[0])
@@ -67,14 +61,13 @@ if uploaded_files:
                     "Confidence": f"{confidence * 100:.2f}%"
                 })
             
-            # Save to session history list
             st.session_state.history.append({
                 "name": uploaded_file.name,
                 "image": res_rgb,
                 "detections": detections
             })
 
-# 6. Display Accumulated History (Newest First)
+# Display History
 if st.session_state.history:
     st.write(f"### Total Processed Images: {len(st.session_state.history)}")
     
